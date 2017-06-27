@@ -1,0 +1,30 @@
+- hosts: localhost
+  tasks:
+    - name: visudo
+      become: yes
+      lineinfile:
+        create: yes
+        path: '/etc/sudoers.d/{{ ansible_user_id }}'
+        line: '{{ ansible_user_id }} ALL=NOPASSWD: ALL'
+
+    - name: packages
+      become: yes
+      apt: name={{item}} update_cache=yes state=present
+      with_items:
+        - git
+        - tmux
+        - vim
+        - tree
+
+    - git_config:
+        name: user.email
+        scope: global
+        value: 'marchenko.alexandr@gmail.com'
+
+    - git_config:
+        name: user.name
+        scope: global
+        value: 'Marchenko Alexandr'
+
+    - include: tasks/node.yml
+    # - include: tasks/python.yml

@@ -1,0 +1,40 @@
+---
+
+# https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+# https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-16-04
+
+- name: node key
+  become: yes
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: node ppa
+  become: yes
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_7.x {{ ansible_distribution_release }} main'
+    state: absent
+
+- name: node ppa
+  become: yes
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_7.x {{ ansible_distribution_release }} main'
+    state: present
+
+- name: node apt
+  become: yes
+  apt: name={{item}} update_cache=yes state=present
+  with_items:
+    - build-essential
+    - nodejs
+
+- name: node npm
+  become: yes
+  npm: name={{item}} global=yes state=latest
+  with_items:
+    - npm
+    - npm-check-updates
+    - create-react-app
+    - '@angular/cli'
+    - json-server
+    - lite-server
